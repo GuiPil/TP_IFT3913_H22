@@ -1,6 +1,7 @@
 import com.sun.source.util.SourcePositions;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.SocketOption;
 
 public class FileRunner {
@@ -11,7 +12,7 @@ public class FileRunner {
      */
 
     Analyser analyser;
-    Parser parser = new Parser();
+    Parser parser = new Parser(analyser);
     File initial;
 
     public FileRunner( Analyser a, String ini_path ){
@@ -19,7 +20,7 @@ public class FileRunner {
         this.initial = new File(ini_path);
     }
 
-   public void run(File path){
+   public void run(File path) throws FileNotFoundException {
         File target = path;
 
         if(target.isDirectory()){
@@ -34,7 +35,7 @@ public class FileRunner {
 
         if(target.isFile()){
             if(target.getName().endsWith(".txt")){ // a remplacer avec .java et autres GP
-                System.out.println(target.getName()+" is a file"); // ici on pourrait parser GP
+                parser.parse(target);
             }
         }
    }
