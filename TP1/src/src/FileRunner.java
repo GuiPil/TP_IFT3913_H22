@@ -34,7 +34,7 @@ public class FileRunner {
         }
 
         if(target.isFile()){
-            if(target.getName().endsWith(".txt")){ // a remplacer avec .java et autres GP
+            if(target.getName().endsWith(".java")){ // a remplacer avec .java et autres GP
                 parser.parse(target);
             }
         }

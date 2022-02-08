@@ -6,10 +6,6 @@ public class Parser {
 
     Analyser mainAnalyser;
 
-    public Parser(Analyser a){
-        this.mainAnalyser = a;
-    }
-
     public void parse(File f) throws FileNotFoundException {
         File file = f;
         Scanner scanner = new Scanner(file);
@@ -37,7 +33,6 @@ public class Parser {
                         comment_check =false;
                     }
                 }
-
                 if(i< nextline.length()-3){
                     if(""+nextline.charAt(i)+nextline.charAt(i+1)+nextline.charAt(i+2) == "/**" ){
                         comment_check = true;
