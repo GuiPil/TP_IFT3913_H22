@@ -6,6 +6,10 @@ public class Parser {
 
     Analyser mainAnalyser;
 
+    public Parser(Analyser analyser) {
+        mainAnalyser = analyser;
+    }
+
     public void parse(File f) throws FileNotFoundException {
         File file = f;
         Scanner scanner = new Scanner(file);
