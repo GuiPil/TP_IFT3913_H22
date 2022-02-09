@@ -26,7 +26,7 @@ public class Parser {
                         comment_count++;
                     }
                     if((""+nextline.charAt(i)+nextline.charAt(i+1)).equals("/*")){
-                        System.out.println("Yeah");
+//                        System.out.println("Yeah");
                         comment_check =true;
                     }
                     if((""+nextline.charAt(i)+nextline.charAt(i+1)).equals("*/")){
@@ -47,8 +47,9 @@ public class Parser {
             }
             line_count++;
         }
-        System.out.println(file.getName()+" contain "+line_count+" lines");
-        System.out.println(file.getName()+" contain "+comment_count+" comments");
+//        System.out.println(file.getName()+" contain "+line_count+" lines");
+//        System.out.println(file.getName()+" contain "+comment_count+" comments");
         scanner.close();
     }
 }
+
