@@ -11,4 +11,11 @@ public class Analyser {
         }
         return instance;
     }
+
+
+    // methode qui cree un node
+
+    public void addNode(int LOC, int CLOC){
+        
+    }
 }

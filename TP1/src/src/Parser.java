@@ -1,8 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Parser {
 
@@ -25,11 +23,6 @@ public class Parser {
         while(scanner.hasNext()){
             String nextline = scanner.nextLine();
 
-
-            if((nextline.contains("//") && !comment_check) || ((nextline.contains("/*") || nextline.contains("/**")) && nextline.contains("*/"))){
-                comment_count++;
-            }
-
             if((nextline.contains("/*") || nextline.contains("/**")) && !comment_check){
                 comment_check = true;
             }
@@ -38,9 +31,15 @@ public class Parser {
             System.out.println(comment_check);
 
             if(nextline.contains("*/") && comment_check){
-               comment_check = false;
-               comment_count++;
+                comment_check = false;
+                comment_count++;
             }
+
+            if((nextline.contains("//") && !comment_check) || ((nextline.contains("/*") || nextline.contains("/**")) && nextline.contains("*/"))){
+                comment_count++;
+            }
+
+
 
 
             if(comment_check){
