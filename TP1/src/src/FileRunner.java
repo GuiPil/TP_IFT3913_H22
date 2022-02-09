@@ -1,8 +1,5 @@
-import com.sun.source.util.SourcePositions;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.SocketOption;
 
 public class FileRunner {
     /**
@@ -15,17 +12,16 @@ public class FileRunner {
     Parser parser = new Parser(analyser);
     File initial;
 
-    public FileRunner( Analyser a, String ini_path ){
-        this.analyser = a;
-        this.initial = new File(ini_path);
+    public FileRunner(Analyser dataBase, String ini_path){
+        initial = new File(ini_path);
     }
 
    public void run(File path) throws FileNotFoundException {
         File target = path;
-
+       //create node and add to tree.
+       System.out.println(target.getPath());
         if(target.isDirectory()){
-            System.out.println(target+" is a package");
-
+//            System.out.println(target+" is a package");
             String[] subs = target.list();
 
             for(int i=0; i<subs.length; i++){
@@ -35,6 +31,7 @@ public class FileRunner {
 
         if(target.isFile()){
             if(target.getName().endsWith(".java")){ // a remplacer avec .java et autres GP
+
                 parser.parse(target);
             }
         }
