@@ -1,21 +1,41 @@
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data structure corresponding to the directory to parse. Each node is a Folder (Node) with childrens or a file (leaf)
+ * with no children
+ */
 public class TreeMetrics {
     Node root;
     String fileExt;
 
+    /**
+     * Constructor
+     * @param rootF root file of the Tree.
+     * @param ext
+     */
     public TreeMetrics(File rootF, String ext){
-        fileExt = ext;
-        walk(rootF);
+        if (rootF.isDirectory()) {
+            fileExt = ext;
+            walk(rootF);
+        }else{
+            throw new InvalidPathException(rootF.getPath(), "Path should be a folder directory");
+        }
     }
 
+    /**
+     * Reset tree root to null
+     */
     private void deleteTree(){
         root = null;
     }
 
+    /**
+     * Recursively walk the file system from the current file and create a node for each file and folder.
+     * @param current
+     */
     private void walk(File current) {
         addNode(current);
         if(current.isDirectory()){
@@ -27,10 +47,20 @@ public class TreeMetrics {
         }
     }
 
+    /**
+     * Adding a node from the root.
+     * @param f file to add
+     */
     public void addNode(File f) {
         addNode(root, f);
     }
 
+    /**
+     * Recursively walk the tree structure until it adds the first node, or finds a root with no children. Else, walk
+     * the tree in the direction that is included in the file to add.
+     * @param current
+     * @param f
+     */
     private void addNode(Node current, File f) {
         if (current == null) root = new Node(f); //first package
         else if (current.children.size() == 0) current.children.add(new Node(f)); //first package in child
@@ -40,7 +70,7 @@ public class TreeMetrics {
                 //est un folder et f est dans folder
                 if (child.file.isDirectory() && f.getPath().contains(child.file.getPath())) {
                     addNode(child, f);
-                    break;
+                    return;
                 }
             }
             // sinon on ajoute dans le current
@@ -49,6 +79,33 @@ public class TreeMetrics {
 
     }
 
+    /**
+     * Size from the root
+     * @return int : size from the root
+     */
+    public int size(){
+        return size(root);
+    }
+
+    /**
+     * Get the size from a Node
+     * @param current
+     * @return int : size from the node
+     */
+    private int size(Node current){
+        if (current.children.size() == 0) return 1;
+        else{
+            int sum = 1;
+            for (Node child: current.children) {
+                sum += size(child);
+            }
+            return sum;
+        }
+    }
+
+    /**
+     * print all node and leafs from the tree.
+     */
     public void traverse(){
         if (root != null){
             traverse(root);
@@ -59,40 +116,26 @@ public class TreeMetrics {
     private void traverse(Node current){
         System.out.println(current);
         for (Node child: current.children) {
-            if(child.children.size()==0){
-                System.out.println(child);
-            }else{
-                traverse(child);
-            }
+            traverse(child);
         }
     }
 
     public static void main(String[] args) {
         String s0 = "../TP1/Test_files";
-        String s1 = "../TP1/Test_files/Package1";
-        String s2 = "../TP1/Test_files/Package1/testClass.java";
-        String s3 = "../TP1/Test_files/testClass2.java";
-        String s4 = "../TP1/Test_files/Package1/Package2";
-        String s5 = "../TP1/Test_files/Package0";
 
         File f0 = new File(s0);
-        File f1 = new File(s1);
-        File f2 = new File(s2);
-        File f3 = new File(s3);
-        File f4 = new File(s4);
-        File f5 = new File(s5);
 
         TreeMetrics treeMetrics = new TreeMetrics(f0, ".java");
         treeMetrics.traverse();
-        treeMetrics.deleteTree();
-        treeMetrics.traverse();
+        System.out.println(treeMetrics.size());
     }
 }
 
-
+/**
+ * Node of the TreeMetrics
+ */
 class Node {
     File file;
-    Node parent;
     List<Node> children = new ArrayList<>();
 
     public Node(File f) {
@@ -105,8 +148,3 @@ class Node {
         return  "file=" + file;
     }
 }
-
-
-//class Package extends Node{
-//
-//}
