@@ -2,9 +2,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class Parser {
+public abstract class  Parser {
 
-    Analyser mainAnalyser;
 
     public void parse(File f) throws FileNotFoundException {
         File file = f;
