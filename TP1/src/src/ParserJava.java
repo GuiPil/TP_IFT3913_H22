@@ -7,11 +7,13 @@ import java.util.Scanner;
  */
 public class ParserJava extends Parser{
 
-    public ParserJava(){
-        super();
-    }
+
     @Override
     int[] parse(File f) throws FileNotFoundException {
+
+        int line_count = 0;
+        int comment_count = 0;
+        boolean comment_check = false;
 
         Scanner scanner = getScanner(f);
         while(scanner.hasNext()){
