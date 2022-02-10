@@ -226,8 +226,12 @@ class Node {
             dc = loc == 0 ? 0 : cloc / (float)loc;
             class_bc = wmc == 0 ? 0 : dc / (float)wmc;
         } else{
-            loc = TreeMetrics.pkgLoc(this);
-            cloc = TreeMetrics.pkgCloc(this);
+            for(Node child : children){
+                loc += child.loc;
+                cloc += child.cloc;
+            }
+//            loc = TreeMetrics.pkgLoc(this);
+//            cloc = TreeMetrics.pkgCloc(this);
             dc = loc == 0 ? 0 : cloc / (float)loc;
         }
     }

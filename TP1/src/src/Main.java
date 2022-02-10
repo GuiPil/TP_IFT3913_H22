@@ -6,11 +6,11 @@ public class Main {
 
     public static void main(String args[]) throws IOException {
 
-        //File root = new File("../TP1/Test_files");
-        //TreeMetrics tree = new TreeMetrics(root, ".java");
-        //tree.traverse();
-        //tree.fetchMetrics();
-        //tree.toCsv(new File("../TP1/Test_output/"));
+        File root = new File("../TP1/Test_files");
+        TreeMetrics tree = new TreeMetrics(root, ".java");
+        tree.traverse();
+        tree.fetchMetrics();
+        tree.toCsv(new File("../TP1/Test_output/"));
 
         //System.out.println(root.toPath().getFileName());
 
@@ -19,10 +19,10 @@ public class Main {
 //        System.out.println(f1.compareTo(f2));
 //        System.out.println(s2.contains(s1));
 
-FactoryParser parser = new FactoryParser(".java");
-File file = new File("../TP1/Test_files/Package1/testClass.java");
-Parser p = parser.create();
-        System.out.println(p.getWMC(file)); // doit retuner ~68
+//        FactoryParser parser = new FactoryParser(".java");
+//        File file = new File("../TP1/Test_files/Package1/testClass.java");
+//        Parser p = parser.create();
+//        System.out.println(p.getWMC(file)); // doit retuner ~68
 
 
 

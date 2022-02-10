@@ -43,7 +43,7 @@ public class ParserJava extends Parser{
         int[] metric = new int[3];
         metric[0] = line_count;
         metric[1] = comment_count;
-        metric[3] = getWMC(f);
+        metric[2] = getWMC(f);
         return metric;
     }
 
