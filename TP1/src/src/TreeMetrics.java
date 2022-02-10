@@ -200,9 +200,9 @@ class Node {
     public void updateMetric() throws FileNotFoundException {
         if (isFile()) {
             int[] data = TreeMetrics.parser.parse(file);
-            loc = data[0]; //TreeMetrics.parser.parseLoc();
-            cloc = data[1]; //TreeMetrics.parser.parsecCloc();
-            dc = cloc == 0 ? 0 : loc / cloc;
+            loc = data[0];
+            cloc = data[1];
+            dc = loc == 0 ? 0 : cloc / loc;
         } else {
             if (children.size() == 0) {
                 loc = 0;
@@ -213,7 +213,7 @@ class Node {
                 loc += child.loc;
                 cloc += child.cloc;
             }
-            dc = cloc == 0 ? 0 : loc / cloc;
+            dc = loc == 0 ? 0 : cloc / loc;
         }
     }
 
