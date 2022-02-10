@@ -5,11 +5,11 @@ public class Main {
 
     public static void main(String args[]) throws FileNotFoundException {
 
-     //   File root = new File("../TP1/Test_files");
-       // TreeMetrics tree = new TreeMetrics(root, ".java");
-        //tree.traverse();
-        //tree.fetchMetrics();
-        //tree.toCsv(new File("../TP1/Test_output/"));
+        File root = new File("../TP1/Test_files");
+        TreeMetrics tree = new TreeMetrics(root, ".java");
+        tree.traverse();
+        tree.fetchMetrics();
+        tree.toCsv(new File("../TP1/Test_output/"));
         //System.out.println(root.toPath().getFileName());
 
 //        System.out.println(f0.compareTo(f1));
@@ -21,6 +21,7 @@ public class Main {
         File file = new File("../TP1/Test_files/Package1/testClass.java");
         Parser p = parser.create();
         p.parse(file);
+
 
 
     }

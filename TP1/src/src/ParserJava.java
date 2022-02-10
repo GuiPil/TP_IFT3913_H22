@@ -10,9 +10,9 @@ public class ParserJava extends Parser{
     public ParserJava(){
         super();
     }
+
     @Override
     int[] parse(File f) throws FileNotFoundException {
-
         Scanner scanner = getScanner(f);
         while(scanner.hasNext()){
             String nextline = scanner.nextLine();

@@ -143,7 +143,7 @@ public class TreeMetrics {
     private void fetchMetrics(Node current) throws FileNotFoundException {
         current.updateMetric();
         for (Node child : current.children) {
-            traverse(child);
+            fetchMetrics(child);
         }
     }
 
@@ -195,11 +195,9 @@ class Node {
 
     public void updateMetric() throws FileNotFoundException {
         if (isFile()) {
-            int[] data = TreeMetrics.parser.parse(this.file);
+            int[] data = TreeMetrics.parser.parse(file);
             loc = data[0]; //TreeMetrics.parser.parseLoc();
             cloc = data[1]; //TreeMetrics.parser.parsecCloc();
-            dc = cloc / loc;
-
         } else {
             if (children.size() == 0) {
                 loc = 0;
@@ -210,8 +208,8 @@ class Node {
                 loc += child.loc;
                 cloc += child.cloc;
             }
-            dc = cloc == 0 ? 0 : loc / cloc;
         }
+        dc = cloc == 0 ? 0 : loc / cloc;
     }
 
     private String toCsv() {
@@ -235,7 +233,6 @@ class Node {
             }
         }
         return row;
-
     }
 
     public void writeToCsv() {
