@@ -1,5 +1,4 @@
 public class FactoryParser {
-
     String ext;
     public FactoryParser(String ext){
         this.ext = ext;
