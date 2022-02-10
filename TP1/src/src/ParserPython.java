@@ -2,33 +2,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-/**
- * ParserJava is parse file .java with the adequate commenting format
- */
-public class ParserJava extends Parser{
-
-    public ParserJava(){
-        super();
-    }
+public class ParserPython extends Parser {
     @Override
     int[] parse(File f) throws FileNotFoundException {
-
         Scanner scanner = getScanner(f);
+        int line_count = 0;
+        int comment_count = 0;
+        boolean comment_check = false;
+
         while(scanner.hasNext()){
             String nextline = scanner.nextLine();
 
-            if((nextline.contains("/*") || nextline.contains("/**")) && !comment_check){
-                comment_check = true;
-            }
-
-            System.out.println(comment_check);
-
-            if(nextline.contains("*/") && comment_check){
-                comment_check = false;
-                comment_count++;
-            }
-
-            if((nextline.contains("//") && !comment_check) || ((nextline.contains("/*") || nextline.contains("/**")) && nextline.contains("*/"))){
+            if((nextline.contains("#") && !comment_check)){
                 comment_count++;
             }
 
@@ -51,4 +36,3 @@ public class ParserJava extends Parser{
         return false;
     }
 }
-

@@ -26,9 +26,12 @@ public class Main {
 //        System.out.println(f0.compareTo(f2));
 //        System.out.println(f1.compareTo(f2));
 //        System.out.println(s2.contains(s1));
-       Analyser dataBase = new Analyser();
-       FileRunner runner = new FileRunner(dataBase, "../TP1/Test_project");
-       runner.run(runner.initial);
+
+        FactoryParser parser = new FactoryParser(".java");
+        File file = new File("../TP1/Test_files/Package1/testClass.java");
+        Parser p = parser.create();
+        p.parse(file);
+
 
     }
 }

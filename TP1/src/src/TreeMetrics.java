@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
@@ -166,10 +167,11 @@ class Node {
         return file.isDirectory();
     }
 
-    public void updateMetric() {
+    public void updateMetric() throws FileNotFoundException {
         if (isFile()) {
-            loc = (int) (Math.random() * 10); //TreeMetrics.parser.parseLoc();
-            cloc = (int) (Math.random() * 10); //TreeMetrics.parser.parsecCloc();
+            int[] data = TreeMetrics.parser.parse(this.file);
+            loc = data[0]; //TreeMetrics.parser.parseLoc();
+            cloc = data[1]; //TreeMetrics.parser.parsecCloc();
             dc = cloc / loc;
         } else {
             if (children.size() == 0) {

@@ -10,7 +10,9 @@ public class FactoryParser {
             case ".java":
                 return new ParserJava();
 
-        }
+            case ".py":
+                return new ParserPython();
+}
         return null;
     }
 }
