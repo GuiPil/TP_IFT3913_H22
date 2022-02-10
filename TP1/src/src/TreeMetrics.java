@@ -155,6 +155,24 @@ public class TreeMetrics {
         }
     }
 
+    public static int pkgLoc(Node current){
+        if(current.children.size() == 0) return current.loc;
+        int loc = 0;
+        for (Node child : current.children){
+            loc += pkgLoc(child);
+        }
+        return loc;
+    }
+
+    public static int pkgCloc(Node current){
+        if(current.children.size() == 0) return current.cloc;
+        int cloc = 0;
+        for (Node child : current.children){
+            cloc += pkgCloc(child);
+        }
+        return cloc;
+    }
+
     public void toCsv(File folder) {
         if (!folder.exists()) folder.mkdirs();
         if (root != null) {
@@ -202,20 +220,16 @@ class Node {
             int[] data = TreeMetrics.parser.parse(file);
             loc = data[0];
             cloc = data[1];
-            dc = loc == 0 ? 0 : cloc / loc;
-        } else {
-            if (children.size() == 0) {
-                loc = 0;
-                cloc = 0;
-                dc = 0.0f;
-            }
-            for (Node child : children) {
-                loc += child.loc;
-                cloc += child.cloc;
-            }
-            dc = loc == 0 ? 0 : cloc / loc;
+            dc = loc == 0 ? 0 : cloc / (float)loc;
+        } else{
+            loc = TreeMetrics.pkgLoc(this);
+            cloc = TreeMetrics.pkgCloc(this);
+            dc = loc == 0 ? 0 : cloc / (float)loc;
         }
     }
+
+
+
 
     private String toCsv() {
         String endLine = "\n";

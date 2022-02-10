@@ -10,6 +10,7 @@ public class Main {
         tree.traverse();
         tree.fetchMetrics();
         tree.toCsv(new File("../TP1/Test_output/"));
+
         //System.out.println(root.toPath().getFileName());
 
 //        System.out.println(f0.compareTo(f1));
@@ -17,10 +18,10 @@ public class Main {
 //        System.out.println(f1.compareTo(f2));
 //        System.out.println(s2.contains(s1));
 
-        FactoryParser parser = new FactoryParser(".java");
-        File file = new File("../TP1/Test_files/Package1/testClass.java");
-        Parser p = parser.create();
-        p.parse(file);
+//        FactoryParser parser = new FactoryParser(".java");
+//        File file = new File("../TP1/Test_files/Package1/testClass.java");
+//        Parser p = parser.create();
+//        p.parse(file);
 
 
 
