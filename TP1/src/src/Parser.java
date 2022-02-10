@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -10,8 +11,8 @@ import java.util.Scanner;
 public abstract class  Parser {
   private static Scanner scanner;
 
-  abstract int[] parse(File f) throws FileNotFoundException;
-  abstract boolean isMethod(String s);
+  abstract int[] parse(File f) throws IOException;
+  abstract int getWMC(File f) throws IOException;
 
   public Scanner getScanner(File f) throws FileNotFoundException {
     return scanner = new Scanner(f);

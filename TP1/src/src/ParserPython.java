@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class ParserPython extends Parser {
@@ -32,7 +33,7 @@ public class ParserPython extends Parser {
     }
 
     @Override
-    boolean isMethod(String s) {
-        return false;
+    int getWMC(File f) throws IOException {
+        return 0;
     }
 }

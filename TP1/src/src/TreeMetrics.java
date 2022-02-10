@@ -132,7 +132,7 @@ public class TreeMetrics {
         }
     }
 
-    public void fetchMetrics() throws FileNotFoundException {
+    public void fetchMetrics() throws IOException {
         if (root != null) {
             fetchFileMetrics(root);
             fetchPackageMetrics(root);
@@ -141,14 +141,14 @@ public class TreeMetrics {
         }
     }
 
-    private void fetchFileMetrics(Node current) throws FileNotFoundException {
+    private void fetchFileMetrics(Node current) throws IOException {
         if(current.isFile()) current.updateMetric();
         for (Node child : current.children) {
             fetchFileMetrics(child);
         }
     }
 
-    private void fetchPackageMetrics(Node current) throws FileNotFoundException {
+    private void fetchPackageMetrics(Node current) throws IOException {
         if(!current.isFile()) current.updateMetric();
         for (Node child : current.children) {
             fetchPackageMetrics(child);
@@ -204,7 +204,9 @@ class Node {
     File file;
     int loc;
     int cloc;
+    int wmc;
     float dc;
+    float class_bc;
     List<Node> children = new ArrayList<>();
 
     public Node(File f) {
@@ -215,12 +217,14 @@ class Node {
         return children.size() == 0 && file.isFile();
     }
 
-    public void updateMetric() throws FileNotFoundException {
+    public void updateMetric() throws IOException {
         if (isFile()) {
             int[] data = TreeMetrics.parser.parse(file);
             loc = data[0];
             cloc = data[1];
+            wmc = data[2];
             dc = loc == 0 ? 0 : cloc / (float)loc;
+            class_bc = wmc == 0 ? 0 : dc / (float)wmc;
         } else{
             loc = TreeMetrics.pkgLoc(this);
             cloc = TreeMetrics.pkgCloc(this);
