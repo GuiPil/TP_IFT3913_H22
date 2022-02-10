@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,8 +13,9 @@ import java.util.List;
  */
 public class TreeMetrics {
     Node root;
-    static File output;
+    static File outputDir;
     public static Parser parser;
+
 
     /**
      * Constructor
@@ -130,17 +132,36 @@ public class TreeMetrics {
         }
     }
 
-    public void toCsv(File out){
-        if (out.isFile()){
-            output = out;
+    public void fetchMetrics() throws FileNotFoundException {
+        if (root != null) {
+            fetchMetrics(root);
+        } else {
+            System.out.println("tree is empty");
         }
-        if (root != null){
-            try{
-                FileWriter fileWriter = new FileWriter(output);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    }
+
+    private void fetchMetrics(Node current) throws FileNotFoundException {
+        current.updateMetric();
+        for (Node child : current.children) {
+            traverse(child);
         }
+    }
+
+    public void toCsv(File folder) {
+        if (!folder.exists()) folder.mkdirs();
+        if (root != null) {
+            outputDir = folder;
+            toCsv(root);
+        }
+
+    }
+
+    private void toCsv(Node current) {
+        current.writeToCsv();
+        for (Node child : current.children) {
+            toCsv(child);
+        }
+
     }
 
 }
@@ -149,6 +170,11 @@ public class TreeMetrics {
  * Node of the TreeMetrics
  */
 class Node {
+    final String SEP = ",";
+    private static final ArrayList<String> HEADER_CLASSES =
+            new ArrayList<>(Arrays.asList("chemin", "class", "classe_LOC", "classe_CLOC", "classe_DC"));
+    private static final ArrayList<String> HEADER_PAQUETS =
+            new ArrayList<>(Arrays.asList("chemin", "paquet", "paquet_LOC", "paquet_CLOC", "paquet_DC"));
     File file;
     int loc;
     int cloc;
@@ -173,6 +199,7 @@ class Node {
             loc = data[0]; //TreeMetrics.parser.parseLoc();
             cloc = data[1]; //TreeMetrics.parser.parsecCloc();
             dc = cloc / loc;
+
         } else {
             if (children.size() == 0) {
                 loc = 0;
@@ -183,27 +210,45 @@ class Node {
                 loc += child.loc;
                 cloc += child.cloc;
             }
-            dc = loc / cloc;
+            dc = cloc == 0 ? 0 : loc / cloc;
         }
     }
 
-    private String ToCsv(){
-        String sep = ",";
+    private String toCsv() {
         String endLine = "\n";
-        String row = file.getPath() + sep
-                + file.getName() + sep
-                + loc + sep
-                + cloc + sep
-                + dc + sep
-                + endLine;
+        String row = file.getPath() + SEP
+                + file.toPath().getFileName() + SEP
+                + loc + SEP
+                + cloc + SEP
+                + dc + endLine;
         return row;
     }
 
+    private String csvHeader(){
+        String row = "";
+        ArrayList<String> header = isFile() ? HEADER_CLASSES : HEADER_PAQUETS;
+        for(int i = 0; i<header.size() ; i++){
+            if(i == header.size() -1 ){
+                row += header.get(i) + "\n";
+            }else{
+                row += header.get(i) + SEP;
+            }
+        }
+        return row;
+
+    }
+
     public void writeToCsv() {
-        if (TreeMetrics.output != null && TreeMetrics.output.isFile()){
-            try{
-                FileWriter writer = new FileWriter(TreeMetrics.output);
-                writer.write(ToCsv());
+        if (TreeMetrics.outputDir != null) {
+            try {
+                String path = isFile() ?
+                        TreeMetrics.outputDir.getPath() + "/classes.csv" : TreeMetrics.outputDir + "/paquets.csv";
+                FileWriter writer = new FileWriter(path, true);
+                if (new File(path).length() == 0) {
+                    writer.write(csvHeader());
+                }
+                writer.write(toCsv());
+                System.out.println("writing " + toCsv());
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
