@@ -7,12 +7,13 @@ import java.util.Scanner;
  */
 public class ParserJava extends Parser{
 
-    public ParserJava(){
-        super();
-    }
-
     @Override
     int[] parse(File f) throws FileNotFoundException {
+
+        int line_count = 0;
+        int comment_count = 0;
+        boolean comment_check = false;
+
         Scanner scanner = getScanner(f);
         while(scanner.hasNext()){
             String nextline = scanner.nextLine();
@@ -20,8 +21,6 @@ public class ParserJava extends Parser{
             if((nextline.contains("/*") || nextline.contains("/**")) && !comment_check){
                 comment_check = true;
             }
-
-            System.out.println(comment_check);
 
             if(nextline.contains("*/") && comment_check){
                 comment_check = false;
@@ -37,8 +36,8 @@ public class ParserJava extends Parser{
             }
             line_count++;
         }
-        System.out.println(f.getName()+" contain "+line_count+" lines");
-        System.out.println(f.getName()+" contain "+comment_count+" comments");
+//        System.out.println(f.getName()+" contain "+line_count+" lines");
+//        System.out.println(f.getName()+" contain "+comment_count+" comments");
         scanner.close();
         int[] metric = new int[2];
         metric[0] = line_count;

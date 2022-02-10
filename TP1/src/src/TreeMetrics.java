@@ -134,16 +134,24 @@ public class TreeMetrics {
 
     public void fetchMetrics() throws FileNotFoundException {
         if (root != null) {
-            fetchMetrics(root);
+            fetchFileMetrics(root);
+            fetchPackageMetrics(root);
         } else {
             System.out.println("tree is empty");
         }
     }
 
-    private void fetchMetrics(Node current) throws FileNotFoundException {
-        current.updateMetric();
+    private void fetchFileMetrics(Node current) throws FileNotFoundException {
+        if(current.isFile()) current.updateMetric();
         for (Node child : current.children) {
-            fetchMetrics(child);
+            fetchFileMetrics(child);
+        }
+    }
+
+    private void fetchPackageMetrics(Node current) throws FileNotFoundException {
+        if(!current.isFile()) current.updateMetric();
+        for (Node child : current.children) {
+            fetchPackageMetrics(child);
         }
     }
 
@@ -185,12 +193,8 @@ class Node {
         file = f;
     }
 
-    private boolean isFile() {
+    public boolean isFile() {
         return children.size() == 0 && file.isFile();
-    }
-
-    private boolean isPackage() {
-        return file.isDirectory();
     }
 
     public void updateMetric() throws FileNotFoundException {
@@ -198,6 +202,7 @@ class Node {
             int[] data = TreeMetrics.parser.parse(file);
             loc = data[0]; //TreeMetrics.parser.parseLoc();
             cloc = data[1]; //TreeMetrics.parser.parsecCloc();
+            dc = cloc == 0 ? 0 : loc / cloc;
         } else {
             if (children.size() == 0) {
                 loc = 0;
@@ -208,8 +213,8 @@ class Node {
                 loc += child.loc;
                 cloc += child.cloc;
             }
+            dc = cloc == 0 ? 0 : loc / cloc;
         }
-        dc = cloc == 0 ? 0 : loc / cloc;
     }
 
     private String toCsv() {
@@ -245,7 +250,6 @@ class Node {
                     writer.write(csvHeader());
                 }
                 writer.write(toCsv());
-                System.out.println("writing " + toCsv());
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
