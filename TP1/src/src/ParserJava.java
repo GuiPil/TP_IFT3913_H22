@@ -86,17 +86,19 @@ public class ParserJava extends Parser {
         int numPredicat = 0;
         if (!comment) {
 
-            Pattern predicatPattern = Pattern.compile("(else\\s+if\\s*\\(|if\\s*\\(|while\\s*\\(|for\\s*\\(|do\\s*\\(|case\\s*.+)");
+            Pattern predicatPattern = Pattern.compile("(else\\s+if\\s*\\(|if\\s*\\(|while\\s*\\(|for\\s*\\(|do\\s*\\{|case\\s*.+:)");
             Matcher predicatMatcher = predicatPattern.matcher(line);
 
             while(predicatMatcher.find()) {
                 System.out.println(predicatMatcher.toString());
-                if(isInComment(line,predicatMatcher)){return numPredicat;}
-                numPredicat = 1;
 
+                if(isInComment(line,predicatMatcher)){
+                    return numPredicat;
+                }
+                numPredicat = 1;
+                return numPredicat;
             }
         }
-
         return numPredicat;
     }
 
@@ -106,7 +108,11 @@ public class ParserJava extends Parser {
         String predicat= temp[0];
 
         String[] inComment = line.split(predicat, 2);
-        if(inComment[0].contains("//") || (inComment[0].contains("/*") && inComment[1].contains("*/"))){
+        boolean cond1 = inComment[0].contains("//");
+        boolean cond2 = (inComment[0].contains("/*") && inComment[1].contains("*/"));
+        boolean cond3 = (inComment[0].contains("/**") && inComment[1].contains("*/"));;
+
+        if(cond1 || cond2 || cond3){
             return true;
         }
         return false;
