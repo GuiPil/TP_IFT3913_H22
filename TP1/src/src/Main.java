@@ -27,10 +27,13 @@ public class Main {
 //        System.out.println(f1.compareTo(f2));
 //        System.out.println(s2.contains(s1));
 
-//        FactoryParser parser = new FactoryParser(".java");
-//        File file = new File("../TP1/Test_files/Package1/testClass.java");
-//        Parser p = parser.create();
-//        System.out.println(p.getWMC(file)); // doit retuner ~68
+
+FactoryParser parser = new FactoryParser(".java");
+File file = new File("../TP1/Test_files/Package1/testClass.java");
+Parser p = parser.create();
+p.parse(file);
+//System.out.println(p.getNumMethod(file)); // doit retuner ~68
+
 
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
 

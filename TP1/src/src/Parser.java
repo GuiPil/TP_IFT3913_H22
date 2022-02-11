@@ -12,7 +12,7 @@ public abstract class  Parser {
   private static Scanner scanner;
 
   abstract int[] parse(File f) throws IOException;
-  abstract int getWMC(File f) throws IOException;
+  abstract int getNumMethod(File f) throws IOException;
 
   public Scanner getScanner(File f) throws FileNotFoundException {
     return scanner = new Scanner(f);
