@@ -49,6 +49,7 @@ public class ParserJava extends Parser{
         metric[1] = comment_count;
         metric[2] = getNumMethod(f);
         System.out.println(metric[0]);
+
         return metric;
     }
 

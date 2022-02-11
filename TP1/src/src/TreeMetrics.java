@@ -142,32 +142,41 @@ public class TreeMetrics {
     }
 
     private void fetchFileMetrics(Node current) throws IOException {
-        if(current.isFile()) current.updateMetric();
+        if (current.isFile()) current.updateMetric();
         for (Node child : current.children) {
             fetchFileMetrics(child);
         }
     }
 
     private void fetchPackageMetrics(Node current) throws IOException {
-        if(!current.isFile()) current.updateMetric();
+        if (!current.isFile()) current.updateMetric();
         for (Node child : current.children) {
             fetchPackageMetrics(child);
         }
     }
 
-    public static int pkgLoc(Node current){
-        if(current.children.size() == 0) return current.loc;
+    public static int pkgWmc(Node current) {
+        if (current.children.size() == 0) return current.loc;
         int loc = 0;
-        for (Node child : current.children){
+        for (Node child : current.children) {
             loc += pkgLoc(child);
         }
         return loc;
     }
 
-    public static int pkgCloc(Node current){
-        if(current.children.size() == 0) return current.cloc;
+    public static int pkgLoc(Node current) {
+        if (current.children.size() == 0) return current.loc;
+        int loc = 0;
+        for (Node child : current.children) {
+            loc += pkgLoc(child);
+        }
+        return loc;
+    }
+
+    public static int pkgCloc(Node current) {
+        if (current.children.size() == 0) return current.cloc;
         int cloc = 0;
-        for (Node child : current.children){
+        for (Node child : current.children) {
             cloc += pkgCloc(child);
         }
         return cloc;
@@ -198,15 +207,15 @@ public class TreeMetrics {
 class Node {
     final String SEP = ",";
     private static final ArrayList<String> HEADER_CLASSES =
-            new ArrayList<>(Arrays.asList("chemin", "class", "classe_LOC", "classe_CLOC", "classe_DC"));
+            new ArrayList<>(Arrays.asList("chemin", "class", "classe_LOC", "classe_CLOC", "classe_DC", "WMC", "classe_BC"));
     private static final ArrayList<String> HEADER_PAQUETS =
-            new ArrayList<>(Arrays.asList("chemin", "paquet", "paquet_LOC", "paquet_CLOC", "paquet_DC"));
+            new ArrayList<>(Arrays.asList("chemin", "paquet", "paquet_LOC", "paquet_CLOC", "paquet_DC", "WCP", "paquet_BC"));
     File file;
     int loc;
     int cloc;
-    int wmc;
+    int weightedComplexity; //wmc for file and wcp for package
     float dc;
-    float class_bc;
+    float bc;
     List<Node> children = new ArrayList<>();
 
     public Node(File f) {
@@ -222,18 +231,22 @@ class Node {
             int[] data = TreeMetrics.parser.parse(file);
             loc = data[0];
             cloc = data[1];
-            wmc = data[2];
-            dc = loc == 0 ? 0 : cloc / (float)loc;
-            class_bc = wmc == 0 ? 0 : dc / (float)wmc;
-        } else{
-            loc = TreeMetrics.pkgLoc(this);
-            cloc = TreeMetrics.pkgCloc(this);
-            dc = loc == 0 ? 0 : cloc / (float)loc;
+            weightedComplexity = data[2];
+            dc = loc == 0 ? 0 : cloc / (float) loc;
+            bc = weightedComplexity == 0 ? 0 : dc / (float) weightedComplexity;
+        } else {
+            for (Node child : children) {
+                loc += child.loc;
+                cloc += child.cloc;
+            }
+//            loc = TreeMetrics.pkgLoc(this);
+//            cloc = TreeMetrics.pkgCloc(this);
+            weightedComplexity = TreeMetrics.pkgWmc(this); //fetching for file, and subpackage
+            dc = loc == 0 ? 0 : cloc / (float) loc;
+            bc = weightedComplexity == 0 ? 0 : dc / (float) weightedComplexity;
+
         }
     }
-
-
-
 
     private String toCsv() {
         String endLine = "\n";
@@ -241,17 +254,19 @@ class Node {
                 + file.toPath().getFileName() + SEP
                 + loc + SEP
                 + cloc + SEP
-                + dc + endLine;
+                + dc + SEP
+                + weightedComplexity + SEP
+                + bc + endLine;
         return row;
     }
 
-    private String csvHeader(){
+    private String csvHeader() {
         String row = "";
         ArrayList<String> header = isFile() ? HEADER_CLASSES : HEADER_PAQUETS;
-        for(int i = 0; i<header.size() ; i++){
-            if(i == header.size() -1 ){
+        for (int i = 0; i < header.size(); i++) {
+            if (i == header.size() - 1) {
                 row += header.get(i) + "\n";
-            }else{
+            } else {
                 row += header.get(i) + SEP;
             }
         }
