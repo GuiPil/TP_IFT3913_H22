@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
  * Abstract class for general parser, child of this class will be the different parser for different programming
  * languages
  */
-
 public abstract class Parser {
     private static Scanner scanner;
 
