@@ -21,14 +21,14 @@ public class Main {
         }
 
 
-        FactoryParser parser = new FactoryParser(".java");
-        File file = new File("../TP1/Test_files/Package1/testClass.java");
-        Parser p = parser.create();
-        try{
-            p.parse(file);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+     //  actoryParser parser = new FactoryParser(".java");
+        //File file = new File("../TP1/Test_files/Package1/testClass.java");
+        //Parser p = parser.create();
+        //try{
+      //      p.parse(file);
+        // }catch (IOException e){
+        //  e.printStackTrace();
+        //}
         //System.out.println(p.getNumMethod(file)); // doit retuner ~68
 
 
