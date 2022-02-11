@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
@@ -12,7 +11,8 @@ import java.util.List;
  * with no children
  */
 public class TreeMetrics {
-    Node root;
+    Package root;
+    FactoryNode nodeFactory;
     static File outputDir;
     public static Parser parser;
 
@@ -24,18 +24,12 @@ public class TreeMetrics {
      */
     public TreeMetrics(File rootF, String ext) {
         if (rootF.isDirectory()) {
+            nodeFactory = new FactoryNode();
             walk(rootF);
             parser = new FactoryParser(ext).create();
         } else {
             throw new InvalidPathException(rootF.getPath(), "Path should be a folder directory");
         }
-    }
-
-    /**
-     * Reset tree root to null
-     */
-    private void deleteTree() {
-        root = null;
     }
 
     /**
@@ -71,8 +65,8 @@ public class TreeMetrics {
      * @param f
      */
     private void addNode(Node current, File f) {
-        if (current == null) root = new Node(f); //first package
-        else if (current.children.size() == 0) current.children.add(new Node(f)); //first package in child
+        if (current == null) root = (Package) nodeFactory.create(f); //first package
+        else if (current.children.size() == 0) current.children.add(nodeFactory.create(f));
         else {
             // check to see if file needs to be added deeper
             for (Node child : current.children) {
@@ -83,7 +77,7 @@ public class TreeMetrics {
                 }
             }
             // sinon on ajoute dans le current
-            current.children.add(new Node(f));
+            current.children.add(nodeFactory.create(f));
         }
 
     }
@@ -125,6 +119,11 @@ public class TreeMetrics {
         }
     }
 
+    /**
+     * Recursively traverse from the current node and print the node.
+     *
+     * @param current Node
+     */
     private void traverse(Node current) {
         System.out.println(current);
         for (Node child : current.children) {
@@ -132,54 +131,61 @@ public class TreeMetrics {
         }
     }
 
+    /**
+     * Update the metrics tree
+     *
+     * @throws IOException
+     */
     public void fetchMetrics() throws IOException {
         if (root != null) {
-            fetchFileMetrics(root);
-            fetchPackageMetrics(root);
+            fetchFileMetrics(root); //walks the tree to update files
+            fetchPackageMetrics(root); //walks the tree to update the package
         } else {
             System.out.println("tree is empty");
         }
     }
 
-    private void fetchFileMetrics(Node current) throws IOException {
+    /**
+     * Walks the tree and update the metrics for everyfiles
+     *
+     * @param current
+     */
+    private void fetchFileMetrics(Node current) {
         if (current.isFile()) current.updateMetric();
         for (Node child : current.children) {
             fetchFileMetrics(child);
         }
     }
 
-    private void fetchPackageMetrics(Node current) throws IOException {
-        if (!current.isFile()) current.updateMetric();
+    /**
+     * Walks the tree and update the metrics for every package
+     * make sure files have been updated first.
+     *
+     * @param current
+     */
+    private void fetchPackageMetrics(Node current) {
+        if (current.isPackage()) current.updateMetric();
         for (Node child : current.children) {
-            fetchPackageMetrics(child);
+            if (child.isPackage()) {
+                System.out.println("update Package");
+                fetchPackageMetrics(child);
+            }
         }
     }
 
+    /**
+     * Evaluate Weighted Complexity based on the subtree of current node.
+     *
+     * @param current
+     * @return the Weighted Complexity of the file or the package depending on the current nodes type.
+     */
     public static int pkgWmc(Node current) {
-        if (current.children.size() == 0) return current.loc;
-        int loc = 0;
+        if (current.children.size() == 0) return current.getComplexity();
+        int complexity = 0;
         for (Node child : current.children) {
-            loc += pkgLoc(child);
+            complexity += pkgWmc(child);
         }
-        return loc;
-    }
-
-    public static int pkgLoc(Node current) {
-        if (current.children.size() == 0) return current.loc;
-        int loc = 0;
-        for (Node child : current.children) {
-            loc += pkgLoc(child);
-        }
-        return loc;
-    }
-
-    public static int pkgCloc(Node current) {
-        if (current.children.size() == 0) return current.cloc;
-        int cloc = 0;
-        for (Node child : current.children) {
-            cloc += pkgCloc(child);
-        }
-        return cloc;
+        return complexity;
     }
 
     public void toCsv(File folder) {
@@ -204,18 +210,13 @@ public class TreeMetrics {
 /**
  * Node of the TreeMetrics
  */
-class Node {
+abstract class Node {
     final String SEP = ",";
-    private static final ArrayList<String> HEADER_CLASSES =
-            new ArrayList<>(Arrays.asList("chemin", "class", "classe_LOC", "classe_CLOC", "classe_DC", "WMC", "classe_BC"));
-    private static final ArrayList<String> HEADER_PAQUETS =
-            new ArrayList<>(Arrays.asList("chemin", "paquet", "paquet_LOC", "paquet_CLOC", "paquet_DC", "WCP", "paquet_BC"));
-    File file;
     int loc;
     int cloc;
-    int weightedComplexity; //wmc for file and wcp for package
     float dc;
     float bc;
+    File file;
     List<Node> children = new ArrayList<>();
 
     public Node(File f) {
@@ -223,46 +224,26 @@ class Node {
     }
 
     public boolean isFile() {
-        return children.size() == 0 && file.isFile();
+        return this instanceof CodeFile;
     }
 
-    public void updateMetric() throws IOException {
-        if (isFile()) {
-            int[] data = TreeMetrics.parser.parse(file);
-            loc = data[0];
-            cloc = data[1];
-            weightedComplexity = data[2];
-            dc = loc == 0 ? 0 : cloc / (float) loc;
-            bc = weightedComplexity == 0 ? 0 : dc / (float) weightedComplexity;
-        } else {
-            for (Node child : children) {
-                loc += child.loc;
-                cloc += child.cloc;
-            }
-//            loc = TreeMetrics.pkgLoc(this);
-//            cloc = TreeMetrics.pkgCloc(this);
-            weightedComplexity = TreeMetrics.pkgWmc(this); //fetching for file, and subpackage
-            dc = loc == 0 ? 0 : cloc / (float) loc;
-            bc = weightedComplexity == 0 ? 0 : dc / (float) weightedComplexity;
-
-        }
+    public boolean isPackage() {
+        return this instanceof Package;
     }
 
-    private String toCsv() {
-        String endLine = "\n";
-        String row = file.getPath() + SEP
-                + file.toPath().getFileName() + SEP
-                + loc + SEP
-                + cloc + SEP
-                + dc + SEP
-                + weightedComplexity + SEP
-                + bc + endLine;
-        return row;
-    }
+    abstract int getComplexity();
 
-    private String csvHeader() {
+    abstract String toCsv();
+
+    abstract public void updateMetric();
+
+    abstract public void writeToCsv();
+
+    abstract ArrayList<String> getHeader();
+
+    String csvHeader() {
         String row = "";
-        ArrayList<String> header = isFile() ? HEADER_CLASSES : HEADER_PAQUETS;
+        ArrayList<String> header = getHeader();
         for (int i = 0; i < header.size(); i++) {
             if (i == header.size() - 1) {
                 row += header.get(i) + "\n";
@@ -273,11 +254,113 @@ class Node {
         return row;
     }
 
+    @Override
+    public String toString() {
+        return "file=" + file;
+    }
+}
+
+class CodeFile extends Node {
+    int wmc;
+
+    private static ArrayList<String> HEADER =
+            new ArrayList<>(Arrays.asList("chemin", "class", "classe_LOC", "classe_CLOC", "classe_DC", "WMC", "classe_BC"));
+
+    public CodeFile(File f) {
+        super(f);
+    }
+
+    @Override
+    int getComplexity() {
+        return wmc;
+    }
+
+    @Override
+    public void updateMetric() {
+        try {
+            int[] data = TreeMetrics.parser.parse(file);
+            loc = data[0];
+            cloc = data[1];
+            wmc = data[2];
+            dc = loc == 0 ? 0 : cloc / (float) loc;
+            bc = wmc == 0 ? 0 : dc / (float) wmc;
+        } catch (IOException e) {
+            System.out.println("Could not parse the metrics in file " + file.getName());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    String toCsv() {
+        String endLine = "\n";
+        String row = file.getPath() + SEP
+                + file.toPath().getFileName() + SEP
+                + loc + SEP
+                + cloc + SEP
+                + dc + SEP
+                + wmc + SEP
+                + bc + endLine;
+        return row;
+    }
+
+    @Override
+    ArrayList<String> getHeader() {
+        return HEADER;
+    }
+
+    @Override
     public void writeToCsv() {
         if (TreeMetrics.outputDir != null) {
             try {
-                String path = isFile() ?
-                        TreeMetrics.outputDir.getPath() + "/classes.csv" : TreeMetrics.outputDir + "/paquets.csv";
+                String path = TreeMetrics.outputDir.getPath() + "/classes.csv";
+                FileWriter writer = new FileWriter(path, true);
+                if (new File(path).length() == 0) {
+                    writer.write(csvHeader());
+                }
+                writer.write(toCsv());
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+class Package extends Node {
+    int wcp;
+    private static final ArrayList<String> HEADER =
+            new ArrayList<>(Arrays.asList("chemin", "paquet", "paquet_LOC", "paquet_CLOC", "paquet_DC", "WCP", "paquet_BC"));
+
+    public Package(File f) {
+        super(f);
+    }
+
+    @Override
+    int getComplexity() {
+        return wcp;
+    }
+
+    @Override
+    public void updateMetric() {
+        System.out.println("In updateMetricS from package  " + file.getName());
+        for (Node child : children) {
+            // metrics is based on files in package only
+            if (child.isFile()) {
+                System.out.println("YUE " + child.loc);
+                loc += child.loc;
+                cloc += child.cloc;
+            }
+        }
+        wcp = TreeMetrics.pkgWmc(this); //fetching for file, and subpackage
+        dc = loc == 0 ? 0 : cloc / (float) loc;
+        bc = wcp == 0 ? 0 : dc / (float) wcp;
+    }
+
+    @Override
+    public void writeToCsv() {
+        if (TreeMetrics.outputDir != null) {
+            try {
+                String path = TreeMetrics.outputDir.getPath() + "/paquet.csv";
                 FileWriter writer = new FileWriter(path, true);
                 if (new File(path).length() == 0) {
                     writer.write(csvHeader());
@@ -291,9 +374,20 @@ class Node {
     }
 
     @Override
-    public String toString() {
-        return "file=" + file;
+    String toCsv() {
+        String endLine = "\n";
+        String row = file.getPath() + SEP
+                + file.toPath().getFileName() + SEP
+                + loc + SEP
+                + cloc + SEP
+                + dc + SEP
+                + wcp + SEP
+                + bc + endLine;
+        return row;
     }
 
-
+    @Override
+    ArrayList<String> getHeader() {
+        return HEADER;
+    }
 }

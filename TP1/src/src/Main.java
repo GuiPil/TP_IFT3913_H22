@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
 
@@ -21,14 +20,14 @@ public class Main {
         }
 
 
-        FactoryParser parser = new FactoryParser(".java");
-        File file = new File("../TP1/Test_files/Package1/testClass.java");
-        Parser p = parser.create();
-        try{
-            p.parse(file);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+//        FactoryParser parser = new FactoryParser(".java");
+//        File file = new File("../TP1/Test_files/Package1/testClass.java");
+//        Parser p = parser.create();
+//        try{
+//            p.parse(file);
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }
         //System.out.println(p.getNumMethod(file)); // doit retuner ~68
 
 
