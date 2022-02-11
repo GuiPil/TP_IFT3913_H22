@@ -42,7 +42,6 @@ public class TreeMetrics {
     private void walk(File current) {
         addNode(current);
         if (current.isDirectory()) {
-//            System.out.println(target+" is a package");
             String[] subs = current.list();
             for (int i = 0; i < subs.length; i++) {
                 walk(new File(current, subs[i]));

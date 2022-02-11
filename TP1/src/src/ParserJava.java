@@ -52,16 +52,11 @@ public class ParserJava extends Parser {
 
             if (!nextline.isEmpty()) line_count++;
         }
-//        System.out.println(f.getName()+" contain "+line_count+" lines");
-//        System.out.println(f.getName()+" contain "+comment_count+" comments");
         scanner.close();
         int[] metric = new int[3];
         metric[0] = line_count;
         metric[1] = comment_count;
         metric[2] = getNumMethod(f) + predicat;
-        System.out.println(metric[0]);
-        System.out.println(predicat);
-        System.out.println(metric[2]);
 
         return metric;
     }
@@ -92,7 +87,6 @@ public class ParserJava extends Parser {
         Matcher methodMatcher = methodPattern.matcher(stringFile);
 
         while (methodMatcher.find()) {
-            //System.out.println(methodMatcher.toString());
             numMethod++;
         }
         return numMethod;
@@ -105,7 +99,7 @@ public class ParserJava extends Parser {
      * @param comment a bool indicating if is in a multi line comment
      * @return a estimate number of the predicat in a file
      */
-    private int getPredicat(String line, boolean comment) {
+    int getPredicat(String line, boolean comment) {
         int numPredicat = 0;
         if (!comment) {
 
@@ -113,7 +107,6 @@ public class ParserJava extends Parser {
             Matcher predicatMatcher = predicatPattern.matcher(line);
 
             while(predicatMatcher.find()) {
-                System.out.println(predicatMatcher.toString());
 
                 if(isInComment(line,predicatMatcher)){
                     return numPredicat;
@@ -132,7 +125,7 @@ public class ParserJava extends Parser {
      * @param m Matcher containing the predicat
      * @return True if the predicat is part of a comment, false otherwise
      */
-    private boolean isInComment(String line, Matcher m){
+    boolean isInComment(String line, Matcher m){
 
         // the toString method give too much information so we isolate the predicate by splitig at keyword
         String[] found = m.toString().split("lastmatch=");
