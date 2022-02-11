@@ -13,6 +13,7 @@ import java.util.List;
 public class TreeMetrics {
     Package root;
     FactoryNode nodeFactory;
+    String ext;
     static File outputDir;
     public static Parser parser;
 
@@ -25,6 +26,7 @@ public class TreeMetrics {
     public TreeMetrics(File rootF, String ext) {
         if (rootF.isDirectory()) {
             nodeFactory = new FactoryNode();
+            this.ext = ext;
             walk(rootF);
             parser = new FactoryParser(ext).create();
         } else {
@@ -65,6 +67,7 @@ public class TreeMetrics {
      * @param f
      */
     private void addNode(Node current, File f) {
+        if (f.isFile() && !f.getPath().endsWith(ext)) return; // skipping file
         if (current == null) root = (Package) nodeFactory.create(f); //first package
         else if (current.isPackage() && current.children.size() == 0) current.children.add(nodeFactory.create(f));
         else {
