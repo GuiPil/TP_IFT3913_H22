@@ -9,17 +9,20 @@ import java.util.regex.Matcher;
  * languages
  */
 
-public abstract class  Parser {
-  private static Scanner scanner;
+public abstract class Parser {
+    private static Scanner scanner;
 
-  abstract int[] parse(File f) throws IOException;
-  abstract int getNumMethod(File f) throws IOException;
-  abstract int getPredicat(String line, boolean comment);
-  abstract boolean isInComment(String line, Matcher m);
+    abstract int[] parse(File f) throws IOException;
 
-  public Scanner getScanner(File f) throws FileNotFoundException {
-    return scanner = new Scanner(f);
-  }
+    abstract int getNumMethod(File f) throws IOException;
+
+    abstract int getPredicat(String line, boolean comment);
+
+    abstract boolean isInComment(String line, Matcher m);
+
+    public Scanner getScanner(File f) throws FileNotFoundException {
+        return scanner = new Scanner(f);
+    }
 
 }
 

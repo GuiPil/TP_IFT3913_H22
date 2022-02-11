@@ -1,4 +1,7 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +18,6 @@ public class ParserJava extends Parser {
      * @return an int table contiaining [Loc,Cloc,Complexity]
      * @throws IOException
      */
-
     @Override
     int[] parse(File f) throws IOException {
 
@@ -68,7 +70,6 @@ public class ParserJava extends Parser {
      * @return number of method in the files
      * @throws IOException
      */
-
     @Override
     int getNumMethod(File f) throws IOException {
 
@@ -95,7 +96,7 @@ public class ParserJava extends Parser {
     /**
      * will extract the total number of predicat (if, while,...) in the file
      *
-     * @param line the current line in the parse method
+     * @param line    the current line in the parse method
      * @param comment a bool indicating if is in a multi line comment
      * @return a estimate number of the predicat in a file
      */
@@ -106,9 +107,9 @@ public class ParserJava extends Parser {
             Pattern predicatPattern = Pattern.compile("(else\\s+if\\s*\\(|if\\s*\\(|while\\s*\\(|for\\s*\\(|do\\s*\\{|case\\s*.+:)");
             Matcher predicatMatcher = predicatPattern.matcher(line);
 
-            while(predicatMatcher.find()) {
+            while (predicatMatcher.find()) {
 
-                if(isInComment(line,predicatMatcher)){
+                if (isInComment(line, predicatMatcher)) {
                     return numPredicat;
                 }
                 numPredicat = 1;
@@ -122,26 +123,23 @@ public class ParserJava extends Parser {
      * indicate if a predicat is in a comment or not
      *
      * @param line current line being parse
-     * @param m Matcher containing the predicat
+     * @param m    Matcher containing the predicat
      * @return True if the predicat is part of a comment, false otherwise
      */
-    boolean isInComment(String line, Matcher m){
+    boolean isInComment(String line, Matcher m) {
 
         // the toString method give too much information so we isolate the predicate by splitig at keyword
         String[] found = m.toString().split("lastmatch=");
         // same as above but with blanks
         String[] temp = found[1].split("\\s+");
-        String predicat= temp[0];
+        String predicat = temp[0];
 
         //we split on the predicat tho obtain a before and after
         String[] inComment = line.split(predicat, 2);
         boolean cond1 = inComment[0].contains("//");
         boolean cond2 = (inComment[0].contains("/*") && inComment[1].contains("*/"));
-        boolean cond3 = (inComment[0].contains("/**") && inComment[1].contains("*/"));;
+        boolean cond3 = (inComment[0].contains("/**") && inComment[1].contains("*/"));
 
-        if(cond1 || cond2 || cond3){
-            return true;
-        }
-        return false;
+        return cond1 || cond2 || cond3;
     }
 }

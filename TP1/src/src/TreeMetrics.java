@@ -11,11 +11,11 @@ import java.util.List;
  * with no children
  */
 public class TreeMetrics {
+    public static Parser parser;
+    static File outputDir;
     Package root;
     FactoryNode nodeFactory;
     String ext;
-    static File outputDir;
-    public static Parser parser;
 
 
     /**
@@ -32,6 +32,23 @@ public class TreeMetrics {
         } else {
             throw new InvalidPathException(rootF.getPath(), "Path should be a folder directory");
         }
+    }
+
+    /**
+     * Evaluate Weighted Complexity based on the subtree of current node.
+     *
+     * @param current
+     * @return the Weighted Complexity of the file or the package depending on the current nodes type.
+     */
+    public static int pkgWcp(Node current) {
+        int complexity = 0;
+        if (current.isFile()) return current.getComplexity();
+        if (current.isPackage()) {
+            for (Node child : current.children) {
+                complexity += pkgWcp(child);
+            }
+        }
+        return complexity;
     }
 
     /**
@@ -181,23 +198,6 @@ public class TreeMetrics {
     }
 
     /**
-     * Evaluate Weighted Complexity based on the subtree of current node.
-     *
-     * @param current
-     * @return the Weighted Complexity of the file or the package depending on the current nodes type.
-     */
-    public static int pkgWcp(Node current) {
-        int complexity = 0;
-        if (current.isFile()) return current.getComplexity();
-        if (current.isPackage()) {
-            for (Node child : current.children) {
-                complexity += pkgWcp(child);
-            }
-        }
-        return complexity;
-    }
-
-    /**
      * Writing tree to csv node by node from root.
      *
      * @param folder
@@ -294,6 +294,7 @@ abstract class Node {
 
     /**
      * Abstract method to convert the node to a string with properties seperated by commas.
+     *
      * @return Csv String with every values
      */
     abstract String toCsv();
@@ -310,12 +311,14 @@ abstract class Node {
 
     /**
      * Getter for the header used in the file
+     *
      * @return ArrayList<String> of the header in the csv
      */
     abstract ArrayList<String> getHeader();
 
     /**
      * Format the header values in csv format
+     *
      * @return String of the header in csv format
      */
     String csvHeader() {
@@ -342,18 +345,17 @@ abstract class Node {
  */
 class CodeFile extends Node {
     /**
+     * Header to used for the csv export
+     */
+    private static final ArrayList<String> HEADER = new ArrayList<>(Arrays.asList("chemin", "class", "classe_LOC", "classe_CLOC", "classe_DC", "WMC", "classe_BC"));
+    /**
      * Weighted Methods per Class (complexity metric for a class)
      */
     int wmc;
 
     /**
-     * Header to used for the csv export
-     */
-    private static ArrayList<String> HEADER =
-            new ArrayList<>(Arrays.asList("chemin", "class", "classe_LOC", "classe_CLOC", "classe_DC", "WMC", "classe_BC"));
-
-    /**
      * Constructor of a CodeFile.
+     *
      * @param f File object containing the relative path to the file.
      */
     public CodeFile(File f) {
@@ -362,6 +364,7 @@ class CodeFile extends Node {
 
     /**
      * Complexity metric for the file
+     *
      * @return
      */
     @Override
@@ -393,18 +396,13 @@ class CodeFile extends Node {
     @Override
     String toCsv() {
         String endLine = "\n";
-        String row = file.getPath() + ","
-                + file.toPath().getFileName() + ","
-                + loc + ","
-                + cloc + ","
-                + dc + ","
-                + wmc + ","
-                + bc + endLine;
+        String row = file.getPath() + "," + file.toPath().getFileName() + "," + loc + "," + cloc + "," + dc + "," + wmc + "," + bc + endLine;
         return row;
     }
 
     /**
      * Return the header property
+     *
      * @return
      */
     @Override
@@ -438,18 +436,17 @@ class CodeFile extends Node {
  */
 class Package extends Node {
     /**
+     * Header to used for the csv export
+     */
+    private static final ArrayList<String> HEADER = new ArrayList<>(Arrays.asList("chemin", "paquet", "paquet_LOC", "paquet_CLOC", "paquet_DC", "WCP", "paquet_BC"));
+    /**
      * Weighted Classes per Package (Complexity metric for the package)
      */
     int wcp;
 
     /**
-     * Header to used for the csv export
-     */
-    private static final ArrayList<String> HEADER =
-            new ArrayList<>(Arrays.asList("chemin", "paquet", "paquet_LOC", "paquet_CLOC", "paquet_DC", "WCP", "paquet_BC"));
-
-    /**
      * Package constructor
+     *
      * @param f File object containing the relative path to the directory.
      */
     public Package(File f) {
@@ -459,6 +456,7 @@ class Package extends Node {
 
     /**
      * Getter for the complexity metric of the package
+     *
      * @return Weighted Classes per Package
      */
     @Override
@@ -509,18 +507,13 @@ class Package extends Node {
     @Override
     String toCsv() {
         String endLine = "\n";
-        String row = file.getPath() + ","
-                + file.toPath().getFileName() + ","
-                + loc + ","
-                + cloc + ","
-                + dc + ","
-                + wcp + ","
-                + bc + endLine;
+        String row = file.getPath() + "," + file.toPath().getFileName() + "," + loc + "," + cloc + "," + dc + "," + wcp + "," + bc + endLine;
         return row;
     }
 
     /**
      * Return the header property
+     *
      * @return
      */
     @Override

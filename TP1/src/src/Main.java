@@ -4,10 +4,9 @@ import java.nio.file.InvalidPathException;
 
 public class Main {
 
-    public static void main(String args[]) {
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        if (args.length < 2){
-            args = new String[] {"../TP1/Test_files", ".java", "../TP1/Test_output"};
+    public static void main(String[] args) {
+        if (args.length < 2) {
+            args = new String[]{"../TP1/Test_files", ".java", "../TP1/Test_output"};
         }
         File root = new File(args[0]);
         try {
@@ -15,25 +14,8 @@ public class Main {
             tree.traverse();
             tree.fetchMetrics();
             tree.toCsv(new File(args[2]));
-        } catch (InvalidPathException | IOException e){
+        } catch (InvalidPathException | IOException e) {
             e.printStackTrace();
         }
-
-//        FactoryParser parser = new FactoryParser(".java");
-//        File file = new File("../TP1/Test_files/Package1/testClass.java");
-//        Parser p = parser.create();
-//        try{
-//            p.parse(file);
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }
-
-        //System.out.println(p.getNumMethod(file)); // doit retuner ~68
-
-
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
-
-
-
     }
 }
