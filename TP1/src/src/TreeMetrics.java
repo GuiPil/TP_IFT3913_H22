@@ -28,7 +28,7 @@ public class TreeMetrics {
             nodeFactory = new FactoryNode();
             this.ext = ext;
             walk(rootF);
-            parser = new FactoryParser(ext).create();
+            parser = new FactoryParser().create(ext);
         } else {
             throw new InvalidPathException(rootF.getPath(), "Path should be a folder directory");
         }
