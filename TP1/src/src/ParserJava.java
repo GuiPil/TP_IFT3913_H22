@@ -84,7 +84,7 @@ public class ParserJava extends Parser {
         }
 
         // Pattern and regex  inspired by this stackoverflow post : https://stackoverflow.com/questions/68633/regex-that-will-match-a-java-method-declaration
-        Pattern methodPattern = Pattern.compile("(public|protected|private|static)\\s+[\\w\\<\\>\\[\\]]+\\s+(\\w+)\\s*\\([^\\)]*\\) *(\\{?|[^;])");
+        Pattern methodPattern = Pattern.compile("(public|protected|private|static|\\s)\\s+[\\w\\<\\>\\[\\]]+\\s+(\\w+)\\s*\\([^\\)]*\\) *(\\{?|[^;])");
         Matcher methodMatcher = methodPattern.matcher(stringFile);
 
         while (methodMatcher.find()) {
@@ -131,7 +131,7 @@ public class ParserJava extends Parser {
         // the toString method give too much information so we isolate the predicate by splitig at keyword
         String[] found = m.toString().split("lastmatch=");
         // same as above but with blanks
-        String[] temp = found[1].split("\\s+");
+        String[] temp = found[1].split("\\s*");
         String predicat = temp[0];
 
         //we split on the predicat tho obtain a before and after
