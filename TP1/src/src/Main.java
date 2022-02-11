@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         if (args.length < 2) {
-            args = new String[]{"../TP1/Test_files", ".java", "../TP1/Test_output"};
+            args = new String[]{"../TP1/Test_project", ".java", "../Analyse/"};
         }
         File root = new File(args[0]);
         try {
