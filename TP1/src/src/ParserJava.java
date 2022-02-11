@@ -126,17 +126,21 @@ public class ParserJava extends Parser {
     }
 
     /**
-     * indicate if a predicat is
+     * indicate if a predicat is in a comment or not
      *
-     * @param line
-     * @param m
-     * @return
+     * @param line current line being parse
+     * @param m Matcher containing the predicat
+     * @return True if the predicat is part of a comment, false otherwise
      */
     private boolean isInComment(String line, Matcher m){
+
+        // the toString method give too much information so we isolate the predicate by splitig at keyword
         String[] found = m.toString().split("lastmatch=");
+        // same as above but with blanks
         String[] temp = found[1].split("\\s+");
         String predicat= temp[0];
 
+        //we split on the predicat tho obtain a before and after
         String[] inComment = line.split(predicat, 2);
         boolean cond1 = inComment[0].contains("//");
         boolean cond2 = (inComment[0].contains("/*") && inComment[1].contains("*/"));
