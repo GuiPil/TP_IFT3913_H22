@@ -33,7 +33,7 @@ public class ParserPython extends Parser {
     }
 
     @Override
-    int getWMC(File f) throws IOException {
+    int getNumMethod(File f) throws IOException {
         return 0;
     }
 }

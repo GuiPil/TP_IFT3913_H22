@@ -22,7 +22,8 @@ public class Main {
 FactoryParser parser = new FactoryParser(".java");
 File file = new File("../TP1/Test_files/Package1/testClass.java");
 Parser p = parser.create();
-        System.out.println(p.getWMC(file)); // doit retuner ~68
+p.parse(file);
+//System.out.println(p.getNumMethod(file)); // doit retuner ~68
 
 
 
