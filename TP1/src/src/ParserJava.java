@@ -8,6 +8,14 @@ import java.util.regex.Pattern;
  */
 public class ParserJava extends Parser {
 
+    /**
+     * will extract the metric necessary for analysing, by parsing the document
+     *
+     * @param f file to be read
+     * @return an int table contiaining [Loc,Cloc,Complexity]
+     * @throws IOException
+     */
+
     @Override
     int[] parse(File f) throws IOException {
 
@@ -58,6 +66,14 @@ public class ParserJava extends Parser {
         return metric;
     }
 
+    /**
+     * will extract the number of method in the class files
+     *
+     * @param f file to be read
+     * @return number of method in the files
+     * @throws IOException
+     */
+
     @Override
     int getNumMethod(File f) throws IOException {
 
@@ -82,6 +98,13 @@ public class ParserJava extends Parser {
         return numMethod;
     }
 
+    /**
+     * will extract the total number of predicat (if, while,...) in the file
+     *
+     * @param line the current line in the parse method
+     * @param comment a bool indicating if is in a multi line comment
+     * @return a estimate number of the predicat in a file
+     */
     private int getPredicat(String line, boolean comment) {
         int numPredicat = 0;
         if (!comment) {
@@ -102,6 +125,13 @@ public class ParserJava extends Parser {
         return numPredicat;
     }
 
+    /**
+     * indicate if a predicat is
+     *
+     * @param line
+     * @param m
+     * @return
+     */
     private boolean isInComment(String line, Matcher m){
         String[] found = m.toString().split("lastmatch=");
         String[] temp = found[1].split("\\s+");
