@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * ParserJava is parse file .java with the adequate commenting format
  */
-public class ParserJava extends Parser {
+public class ParserJava extends Parser{
 
     /**
      * will extract the metric necessary for analysing, by parsing the document

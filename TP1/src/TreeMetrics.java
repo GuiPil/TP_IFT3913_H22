@@ -488,7 +488,7 @@ class Package extends Node {
     public void writeToCsv() {
         if (TreeMetrics.outputDir != null) {
             try {
-                String path = TreeMetrics.outputDir.getPath() + "/paquet.csv";
+                String path = TreeMetrics.outputDir.getPath() + "/paquets.csv";
                 FileWriter writer = new FileWriter(path, true);
                 if (new File(path).length() == 0) {
                     writer.write(csvHeader());

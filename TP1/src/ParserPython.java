@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
  * <p>
  * Just to show that i could be adapt to other languages
  */
-public class ParserPython extends Parser {
+public class ParserPython extends Parser{
 
 
     @Override
