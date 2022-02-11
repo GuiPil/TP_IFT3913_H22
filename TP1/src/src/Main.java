@@ -19,8 +19,6 @@ public class Main {
             e.printStackTrace();
         }
 
-
-
 //        FactoryParser parser = new FactoryParser(".java");
 //        File file = new File("../TP1/Test_files/Package1/testClass.java");
 //        Parser p = parser.create();
