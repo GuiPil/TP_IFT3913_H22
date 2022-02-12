@@ -4,8 +4,9 @@ Repository : https://github.com/GuiPil/TP_IFT3913_H22/tree/main/TP1
 
 Goal : Developing a tool that extract metric, useful into the analysis of the quality of code
 
-Compile: Our project is using jdk-17, to compile the project you can either create at jar files with the help of your
-favorite IDE or you can compile using "javac -classpath . src/Main.java".
+Compile: Our project is using jdk-17, the source file is at ../TP1/src, to compile the project you can either create at
+jar files with the help of your favorite IDE, the entry class is Main, or you can compile using
+"javac -classpath . src/Main.java".
 
 Execute: To execute the code, the following command "java -jar TP1.jar arg1 arg2 arg3" should be used to ensure an
 optimal execution.The arguments corresponding to file_path(arg1), extension(arg2) and output_path(arg3) or the command
