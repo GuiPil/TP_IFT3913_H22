@@ -12,6 +12,9 @@ Execute: To execute the code, the following command "java -jar TP1.jar arg1 arg2
 optimal execution.The arguments corresponding to file_path(arg1), extension(arg2) and output_path(arg3) or the command
 line "java ../Main arg1 arg2 arg3". They are described in more details in the "Use" section below.
 
+Here is an exemple command to run the jar file :
+java -jar TP1.jar path/to/project/to/analyse .java output/path/for/csv/
+
 Use : Our program extract in all the files containing the specified extension metric useful to analyse the quality of
 the code. the first argument should be the path of the folder that is analysed.The second one, should be the extension
 that we want to analyse (ex: .java, .py, .c, etc.)(Note : only .java works in that implementation). The third argument,
