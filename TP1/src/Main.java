@@ -12,7 +12,6 @@ public class Main {
             args = new String[]{"../TP1/Test_project", ".java", "../Analyse/"};
         }
 
-
         File root = new File(args[0]);
         try {
             TreeMetrics tree = new TreeMetrics(root, args[1]);
