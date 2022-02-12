@@ -1,15 +1,15 @@
-Authors: Guillaume Pilon (1055643), Jérémie Tousignant ()
+Authors: Guillaume Pilon (1055643), Jérémie Tousignant (1038551)
 
 Repository : https://github.com/GuiPil/TP_IFT3913_H22/tree/main/TP1
 
-Goal : Developing a tool that extract metric, useful in to analyse the quality of code
+Goal : Developing a tool that extract metric, useful into the analysis of the quality of code
 
-Compile:
+Compile: Our project is using jdk-17, to compile the project you can either create at jar files with the help of your
+favorite IDE or you can compile using "javac -classpath . src/Main.java".
 
-Execute: To execute the code, you need to have a version of java.The project is using jdk-17.
-The following command "java -jar TP1.jar arg1 arg2 arg3" should be used to ensure an optimal execution.
-The arguments corresponding to file_path(arg1), extension(arg2) and output_path(arg3).
-They are described in more details in the "Use" section below.
+Execute: To execute the code, the following command "java -jar TP1.jar arg1 arg2 arg3" should be used to ensure an
+optimal execution.The arguments corresponding to file_path(arg1), extension(arg2) and output_path(arg3) or the command
+line "java ../Main arg1 arg2 arg3". They are described in more details in the "Use" section below.
 
 Use : Our program extract in all the files containing the specified extension metric useful to analyse the quality of
 the code. the first argument should be the path of the folder that is analysed.The second one, should be the extension
