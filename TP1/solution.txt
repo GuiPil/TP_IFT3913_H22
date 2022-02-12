@@ -1,0 +1,65 @@
+Partie 4
+
+Pour l'analyse des classes, nous avons analyser les données avec un petit script python. 
+L'objectif a simplement été de filtrer les nombreuses classes afin de cibler les classes
+les plus susceptibles à necessité des commentaires.
+
+Le traitement a été le suivant:
+	- Nous avons exclus les classes servant aux tests unitaires
+	- Nous avons conserver les classes avec plus de 100 lignes de code
+	- De ces classes, nous avons conserver ceux qui avait une complexité > 50.
+	- Enfin de ces 117 classes, nous les avons ordonnées par classes_BC
+	
+On observe immédiatement des classes qui ne sont pas très bien commenté par rapport
+à leur complexité. Nous avons donc 3 classes qui sont très susceptibles de poser problème
+et qui seront difficiles à corriger en raison de la densité de commentaires insuffisantes.
+
+
+		chemin																			class						classe_LOC	classe_CLOC		classe_DC		WMC	classe_BC
+689	main/java/org/jfree/chart/plot/XYPlot.java					XYPlot.java				4985				2259					0.453159			720		0.000629
+695	main/java/org/jfree/chart/plot/CategoryPlot.java			CategoryPlot.java	4527				2110					0.466092			628		0.000742
+832	main/java/org/jfree/data/general/DatasetUtils....			DatasetUtils.java		2330				872						0.374249			351		0.001066
+
+***Recommandation pour XYPlot.java ***
+Il y a des méthodes qui sont très grandes comme à la ligne 3412 avec des comportements qui pourraient être encapsulé dans des méthodes. Par exemple, 
+le render forward et reverse aurait pu être une méthode bien commentée au lieu d'être dans un bloc de commentaire.
+
+***Recommandation pour CategoryPlot.java ***
+Le constructeur aurait pu être diviser en plusieurs méthodes mieux commentées comme ceux de la ligne 451 et 452. On a plein de méthodes bien documentées
+jusqu'à ce qu'on arrive au ligne 3000 et plus. En effet, il y a des méthodes avec plusieurs centaines de lignes qui sont sans doutes un enfer à maintenir en raison
+du manque de commentaire et de la complexité élevée des méthodes comme render et draw. Un division de ces méthodes aideraient sans doute à mieux maintenir
+et comprendre le code.
+
+*** Recommandation pour DatasetUtils.java : ***
+Créer un package utilsDataset qui encapsule les méthodes statiques dans différente classe représentant des types
+d'outils aiderait sans doute le maintien de cette classe. Autrement, ajouter un peu de commentaires dans les méthodes aideraient sans doute à maintenir et débugger
+les méthodes, car seulement 37% des lignes sont des commentaires.
+
+
+
+Un traitement similaire a été fait sur les paquets.
+
+Pour le filtrage, nous avons concerver les paquets qui étaient dans le quartile des paquets avec le plus de ligne de code et le plus de complexité.
+Ensuite, nous avons ordonnées en fonction du degré avec lequel un paquet est bien commenté (paquet_BC).
+
+Des 10 paquets résultants de ce filtrage, nous avons regarder les trois premiers:
+
+
+		chemin											paquet		paquet_LOC	paquet_CLOC		paquet_DC		WCP		paquet_BC
+57	main/java/org/jfree/chart				chart		6585				3281					0.498254			16247		0.000031
+74	main/java/org/jfree/chart/plot		plot			25069				12157					0.484942			4524		0.000107
+85	main/java/org/jfree/data				data			4750				2745					0.577895			5036		0.000115
+
+*** Recommandation pour chart ***
+Ce paquet a un bon ration de commentaires, soit 1 ligne de code pour 1 ligne de commentaire. Par contre, considérant la complexité de ces classes, 
+il s'agit d'un paquet avec une source de problème élevé. Les classes du package pourraient être plus emplement commenté, ou bien les méthodes pourraient 
+être subdivisé pour réduire la complexité. 
+
+*** Recommandation pour plot ***
+Plot comporte beaucoup de ligne de code, soit 25 000, mais avec beaucoup de commentaire (12 000). Augmenter le nombre de commentaire ou retravailler les méthodes
+pour réduire la complexité aiderait ce package. 
+
+
+*** Recommandation pour data ***
+C'est l'un des paquets avec la meilleure densité de commmentaires. En effet, il est 2e parmi les 10 paquets suceptibles d'avoir des problèmes. Donc,
+l'amélioration de paquet_BC est plus réaliste en essayant de réduire la complexité des méthodes.
