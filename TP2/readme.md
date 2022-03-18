@@ -1,4 +1,4 @@
-#TP2 - IFT3913
+# TP2 - IFT3913
 
 Guillaume Pilon (1055643)
 Jérémie Tousignant (1038501)
