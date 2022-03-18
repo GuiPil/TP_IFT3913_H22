@@ -1,3 +1,5 @@
+#TP2 - IFT3913
+
 Guillaume Pilon (1055643)
 Jérémie Tousignant (1038501)
 
@@ -33,3 +35,4 @@ jupyter lab
 
 ```
 
+Il est également possible de simplement ouvrir le résultat des notebooks dans la version html que nous vous avons fournis. L'interactivité des graphiques plotly est préservée.
