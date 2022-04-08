@@ -84,7 +84,10 @@ class MainWindowTest {
         @Test
         @DisplayName("Couverture des chemins independants")
         void couvertureIndependant(){
-
+            assertEquals(0.0, MainWindow.convert("CAD Dollar", null, currencies, 100d));
+            assertEquals(0.0, MainWindow.convert("US Dollar", null, currencies, 100d));
+            assertEquals(0.0, MainWindow.convert("US Dollar", "CAD Dollar", currencies, 100d));
+            assertEquals(100d,MainWindow.convert("US Dollar", "US Dollar", currencies, 100d));
         }
 
     }
