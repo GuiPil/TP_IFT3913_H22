@@ -10,29 +10,70 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MainWindowTestWhiteBoxTest {
 
-        static ArrayList<Currency> testTable = Currency.init();
+    static ArrayList<Currency> currencies = new ArrayList<Currency>();
+    static ArrayList<Currency> empty = new ArrayList<>();
+    static ArrayList<Currency> USDsolo = new ArrayList<>();
+
+    static Double[] amountsValid;
+
+    static Double exchangeValueUSDtoCAD; //USD to CAD
+    static Double exchangeValueCADtoUSD; //CAD to USD
+
+
+
+    @BeforeAll
+    static void initAll(){
+        exchangeValueUSDtoCAD = 1.26;
+        exchangeValueCADtoUSD = 0.79;
+
+
+        //adding valid currencies
+        currencies.add( new Currency("CAN Dollar", "CAD") );
+        currencies.get(0).setExchangeValues("CAD", 1.00);
+        currencies.get(0).setExchangeValues("USD", exchangeValueCADtoUSD);
+        currencies.add( new Currency("US Dollar", "USD") );
+        currencies.get(1).setExchangeValues("USD", 1.00);
+        currencies.get(1).setExchangeValues("CAD", exchangeValueUSDtoCAD);
+        USDsolo.add(new Currency("US Dollar", "USD"));
+        USDsolo.get(0).setExchangeValues(("USD"), 1.00);
+
+    }
 
         @Test
         @DisplayName("Couverture des instruction")
         void couvertureInstructionWT(){
-            assertEquals(93,MainWindow.convert("US Dollar","Euro", testTable, 100d));
+            assertEquals(126,MainWindow.convert("US Dollar","CAD Dollar",currencies, 100d));
         }
 
         @Test
         @DisplayName("Couverture des arcs de graphe de flot de controle")
-        void couvertureArcWT(){
-            assertEquals(93, MainWindow.convert("US Dollar", "Euro", testTable, 100d));
-            assertEquals(0.0, MainWindow.convert("US Dollar", null, testTable, 100d));
-            assertEquals(0.0, MainWindow.convert("CAD Dollar", "Euro", testTable, 100d));
+        void couvertureArcWTD1(){
+            assertEquals(126, MainWindow.convert("US Dollar", "CAD Dollar", currencies, 100d));
         }
 
         @Test
-        @DisplayName("Couverture des chemins independants")
-        void couvertureIndependant(){
-            assertEquals(0.0, MainWindow.convert("CAD Dollar", null, testTable, 100d));
-            assertEquals(0.0, MainWindow.convert("US Dollar", null, testTable, 100d));
-            assertEquals(0.0, MainWindow.convert("US Dollar", "CAD Dollar",testTable, 100d));
-            assertEquals(100d,MainWindow.convert("US Dollar", "US Dollar", testTable, 100d));
+        void couvertureArcWTD2(){
+            assertEquals(0.0, MainWindow.convert("US Dollar", null, currencies, 100d));
+    }
 
+        @Test
+        void couvertureArcWTD3(){
+            assertEquals(0.0, MainWindow.convert("PESO Peso", "USD Dollar", currencies, 100d));
+        }
+
+    @Test
+    @DisplayName("Couverture des chemins independants")
+        void couvertureIndependant(){
+            assertEquals(0.0, MainWindow.convert("PESO Pesos", "CAD Dollar",empty, 100d));
+    }
+
+    @Test
+    void couvertureIndependantD2(){
+        assertEquals(0.0, MainWindow.convert("PESO Pesos", "US Dollar", USDsolo, 100d));
+    }
+
+    @Test
+    void couvertureIndependantD3(){
+        assertEquals(79d,MainWindow.convert("USD Dollar", "US Dollar", currencies, 100d));
     }
 }
