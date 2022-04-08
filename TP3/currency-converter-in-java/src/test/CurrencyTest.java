@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CurrencyTest {
 
     @BeforeAll
-    void initAll(){
+    static void initAll(){
         Integer[] amounts = {-5000, -1, 0, 5000, 10000, 10001, 20000};
         String[] currencyNames = {"USD", "CAD", "JPY"};
         ArrayList<Currency> currencies = new ArrayList<Currency>();
@@ -31,4 +31,14 @@ class CurrencyTest {
     void convertBlackBox() {
 
     }
+
+    // --- White Box Test --
+
+    @Test
+    public void whiteBoxCouvertureIns(){
+        assertEquals(79, Currency.convert(100d, 0.79));
+        assertEquals(1.07, Currency.convert(0.85, 1.26));
+    }
+
+
 }
