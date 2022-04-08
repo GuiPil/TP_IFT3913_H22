@@ -16,12 +16,8 @@ class MainWindowBlackBoxTest {
     static ArrayList<Currency> currencies = new ArrayList<Currency>();
     static Double[] amountsValid;
 
-
-    //USD TO CAD
-    static Double exchangeValueUSDtoCAD;
-    static Double[] expectedValueUSDtoCAD;
-    static Double exchangeValueCADtoUSD;
-    static Double[] expectedValueCADtoUSD;
+    static Double exchangeValueUSDtoCAD; //USD to CAD
+    static Double exchangeValueCADtoUSD; //CAD to USD
 
 
 
