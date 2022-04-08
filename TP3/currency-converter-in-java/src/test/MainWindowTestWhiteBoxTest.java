@@ -42,13 +42,13 @@ class MainWindowTestWhiteBoxTest {
         @Test
         @DisplayName("Couverture des instruction")
         void couvertureInstructionWT(){
-            assertEquals(126,MainWindow.convert("US Dollar","CAD Dollar",currencies, 100d));
+            assertEquals(126,MainWindow.convert("US Dollar","CAN Dollar",currencies, 100d));
         }
 
         @Test
         @DisplayName("Couverture des arcs de graphe de flot de controle")
         void couvertureArcWTD1(){
-            assertEquals(126, MainWindow.convert("US Dollar", "CAD Dollar", currencies, 100d));
+            assertEquals(126d, MainWindow.convert("US Dollar", "CAN Dollar", currencies, 100d));
         }
 
         @Test
@@ -58,7 +58,7 @@ class MainWindowTestWhiteBoxTest {
 
         @Test
         void couvertureArcWTD3(){
-            assertEquals(0.0, MainWindow.convert("PESO Peso", "USD Dollar", currencies, 100d));
+            assertEquals(0.0, MainWindow.convert("PESO Peso", "US Dollar", currencies, 100d));
         }
 
     @Test
@@ -74,6 +74,6 @@ class MainWindowTestWhiteBoxTest {
 
     @Test
     void couvertureIndependantD3(){
-        assertEquals(79d,MainWindow.convert("USD Dollar", "US Dollar", currencies, 100d));
+        assertEquals(100d,MainWindow.convert("US Dollar", "US Dollar", currencies, 100d));
     }
 }
