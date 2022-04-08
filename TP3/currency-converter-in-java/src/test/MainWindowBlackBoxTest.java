@@ -25,7 +25,6 @@ class MainWindowBlackBoxTest {
     static void initAll(){
         exchangeValueUSDtoCAD = 1.26;
         exchangeValueCADtoUSD = 0.79;
-
         //adding valid currencies
         currencies.add( new Currency("US Dollar", "USD") );
         currencies.get(0).setExchangeValues("USD", 1.00);
@@ -33,8 +32,8 @@ class MainWindowBlackBoxTest {
         currencies.add( new Currency("CAN Dollar", "CAD") );
         currencies.get(1).setExchangeValues("CAD", 1.00);
         currencies.get(1).setExchangeValues("USD", exchangeValueCADtoUSD);
-
     }
+
     @DisplayName("Should accept all these amount and return the correct price from USD to CAD")
     @ParameterizedTest
     @CsvSource({"0","5000","10000"})
