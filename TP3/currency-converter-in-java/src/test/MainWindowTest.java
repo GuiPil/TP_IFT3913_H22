@@ -2,8 +2,8 @@ package test;
 
 import currencyConverter.Currency;
 import currencyConverter.MainWindow;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.provider.NullSource;
 
 import java.util.ArrayList;
 
@@ -60,5 +60,32 @@ class MainWindowTest {
                             currencies,
                             amountsTest[i]));
         }
+    }
+
+    @Nested
+    @DisplayName("White Tests")
+    class MainWindowTestWT{
+        ArrayList<Currency> testTable = Currency.init();
+
+        @Test
+        @DisplayName("Couverture des instruction")
+        void couvertureInstructionWT(){
+            assertEquals(93,MainWindow.convert("US Dollar","Euro", testTable, 100d));
+        }
+
+        @Test
+        @DisplayName("Couverture des arcs de graphe de flot de controle")
+        void couvertureArcWT(){
+            assertEquals(93, MainWindow.convert("US Dollar", "Euro", testTable, 100d));
+            assertEquals(0.0, MainWindow.convert("US Dollar", null, testTable, 100d));
+            assertEquals(0.0, MainWindow.convert("CAD Dollar", "Euro", testTable, 100d));
+        }
+
+        @Test
+        @DisplayName("Couverture des chemins independants")
+        void couvertureIndependant(){
+
+        }
+
     }
 }
