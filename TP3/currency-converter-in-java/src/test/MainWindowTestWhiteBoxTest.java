@@ -42,7 +42,7 @@ class MainWindowTestWhiteBoxTest {
         @Test
         @DisplayName("Couverture des instruction")
         void couvertureInstructionWT(){
-            assertEquals(126,MainWindow.convert("US Dollar","CAN Dollar",currencies, 100d));
+            assertEquals(126d,MainWindow.convert("US Dollar","CAN Dollar",currencies, 100d));
         }
 
         @Test
@@ -64,7 +64,7 @@ class MainWindowTestWhiteBoxTest {
     @Test
     @DisplayName("Couverture des chemins independants")
         void couvertureIndependant(){
-            assertEquals(0.0, MainWindow.convert("PESO Pesos", "CAD Dollar",empty, 100d));
+            assertEquals(0.0, MainWindow.convert("PESO Pesos", "CAN Dollar",empty, 100d));
     }
 
     @Test
