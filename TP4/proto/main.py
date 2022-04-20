@@ -31,7 +31,7 @@ def save_to_csv(columns, *arrays):
         csvfile.writelines(lines)
 
 
-def count_class(id_commit, file_ext):
+def count_class(file_ext):
     """
     Count files with a specific extension from the id_commit
     :param id_commit:
@@ -89,24 +89,24 @@ def clean_repo():
     :return:
     """
     if os.path.isdir(PATH_TO_REPO):
-        print(f'removing {PATH_TO_REPO} and all subdirectories')
+        # print(f'removing {PATH_TO_REPO} and all subdirectories')
         shutil.rmtree(PATH_TO_REPO)  # delete all directory if it already exist
 
 
-def fetch_and_save_id_nc(url, branch_name, file_ext, out_csv):
-    print(f'calling, {url}')  # Press Ctrl+F8 to toggle the breakpoint.
+def fetch_and_save(url='', branch_name='', file_ext='', out_csv='.', start=0, end=None):
+    print(f'calling, {url}')
     if not clone_repo(url):
         raise ValueError(f"Could not clone the repository of {url}")
     list_ids = read_ids(branch_name)
     nc_list = []
     mWMC_list = []
     mBC_list = []
-    for id_commit in tqdm(list_ids[:10]):
+    for id_commit in tqdm(list_ids[start:end]):
         reset_git(id_commit)
-        nc_current = count_class(id_commit, file_ext)
-        nc_list.append(nc_current)
+        nc_current = count_class(file_ext)
         # CALL METRIC ANALYSER
         mWMC, mBC = metric_analyser('TP1.jar', PATH_TO_REPO, f'.{file_ext}', out_csv)
+        nc_list.append(nc_current)
         mWMC_list.append(mWMC)
         mBC_list.append(mBC)
     save_to_csv(['commit_id', 'nc_list', 'mWMC', 'mBC'], list_ids, nc_list, mWMC_list, mBC_list) # INUTILE
@@ -124,24 +124,53 @@ def metric_analyser(path_to_tp1, path_to_analyse, file_ext, output_path):
 
 def clean_metric_analyse_output(output_path):
     if os.path.isdir(output_path):
-        print(f'removing {output_path} and all subdirectories\n')
+        # print(f'\nremoving {output_path} and all subdirectories')
         shutil.rmtree(output_path)  # delete all directory if it already exist
 
 
-def main(url, branch_name, file_ext, out_csv):
+def main(url, branch_name, file_ext,out_csv, start, end):
     """Entry point of proto"""
     print('fetching data')
-    fetch_and_save_id_nc(url, branch_name, file_ext, out_csv)  # tache 1
+    fetch_and_save(url, branch_name, file_ext, out_csv, start, end)  # tache 1
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--url', help='url of the repository to analyse', default='https://github.com/jfree/jfreechart')
-    parser.add_argument('--branch-name', help='Name of the main branch, usually main or master', default='master')
-    parser.add_argument('--type', help='File extension to look for in the analysis', default='java')
-    parser.add_argument('--out', help='url of the repository to analyse', default='./output_analyse/')
+    parser.add_argument('--url',
+                        help='url of the repository to analyse',
+                        type=str,
+                        default='https://github.com/jfree/jfreechart')
+    parser.add_argument('--branch-name',
+                        help='Name of the main branch, usually main or master',
+                        type=str,
+                        default='master')
+    parser.add_argument('--type',
+                        help='File extension to look for in the analysis',
+                        type=str,
+                        default='java')
+    parser.add_argument('--out',
+                        help='url of the repository to analyse',
+                        type=str,
+                        default='./output_analyse/')
+    parser.add_argument('--start',
+                        help='Analyse commits from [start:end]',
+                        type=int,
+                        default=0)
+    parser.add_argument('--end',
+                        help='Analyse commits from [start:end]',
+                        type=int,
+                        default=0)
     args = parser.parse_args()
-    main(url=args.url, branch_name=args.branch_name, file_ext=args.type, out_csv=args.out)
+
+    if args.end == 0:
+        args.end = None
+
+    main(url=args.url,
+         branch_name=args.branch_name,
+         file_ext=args.type,
+         out_csv=args.out,
+         start=args.start,
+         end=args.end)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
