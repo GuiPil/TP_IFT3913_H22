@@ -128,14 +128,13 @@ def clean_metric_analyse_output(output_path):
         shutil.rmtree(output_path)  # delete all directory if it already exist
 
 
-def main(url, branch_name, file_ext,out_csv, start, end):
+def run(url, branch_name, file_ext,out_csv, start, end):
     """Entry point of proto"""
     print('fetching data')
     fetch_and_save(url, branch_name, file_ext, out_csv, start, end)  # tache 1
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
+def main():
+    print('starting proto...')
     parser = argparse.ArgumentParser()
     parser.add_argument('--url',
                         help='url of the repository to analyse',
@@ -166,7 +165,48 @@ if __name__ == '__main__':
     if args.end == 0:
         args.end = None
 
-    main(url=args.url,
+    run(url=args.url,
+         branch_name=args.branch_name,
+         file_ext=args.type,
+         out_csv=args.out,
+         start=args.start,
+         end=args.end)
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    print('starting proto...')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--url',
+                        help='url of the repository to analyse',
+                        type=str,
+                        default='https://github.com/jfree/jfreechart')
+    parser.add_argument('--branch-name',
+                        help='Name of the main branch, usually main or master',
+                        type=str,
+                        default='master')
+    parser.add_argument('--type',
+                        help='File extension to look for in the analysis',
+                        type=str,
+                        default='java')
+    parser.add_argument('--out',
+                        help='Output of the analyser from TP1',
+                        type=str,
+                        default='./output_analyse/')
+    parser.add_argument('--start',
+                        help='Analyse commits from [start:end]',
+                        type=int,
+                        default=0)
+    parser.add_argument('--end',
+                        help='Analyse commits from [start:end]',
+                        type=int,
+                        default=0)
+
+    args = parser.parse_args()
+
+    if args.end == 0:
+        args.end = None
+
+    run(url=args.url,
          branch_name=args.branch_name,
          file_ext=args.type,
          out_csv=args.out,
